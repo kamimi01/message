@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,10 +12,17 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
         \Schema::defaultStringLength(191);
-        \URL::forceScheme("https");
+        // indexあとのcreateなどのリンクがhttpsだと動かないため、httpに変更した
+        \URL::forceScheme("http");
+
+        // localhostをhttpsにするために、追加したが、localhostはこの方法ではhttpsにならないらしい
+        // if (in_array(config("app.env"), ["prd", "stg"], true)) {
+        //     $url->forceScheme("https");
+        //     print "こっちも実行された" . PHP_EOL;
+        // }
     }
 
     /**
